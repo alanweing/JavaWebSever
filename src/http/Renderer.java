@@ -2,6 +2,8 @@ package http;
 
 import com.sun.istack.internal.Nullable;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -31,10 +33,11 @@ public class Renderer {
         byte[] toReturn = null;
         try {
             FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
             toReturn = new byte[(int) file.length()];
-            fis.read(toReturn);
+            bis.read(toReturn, 0, toReturn.length);
+            bis.close();
             fis.close();
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -7,16 +7,14 @@ import java.util.ArrayList;
 
 public class Response {
     private final OutputStream _output;
-    private final PrintWriter _writer;
-    private final Request _request;
+    private final Context _ctx;
 
     private HTTP.StatusCode _statusCode = HTTP.StatusCode.OK;
     private ArrayList<String> _page = new ArrayList<>();
 
-    public Response(final OutputStream outputStream, final Request request) {
-        _output = outputStream;
-        _request = request;
-        _writer = new PrintWriter(outputStream, true);
+    public Response(final Context context) throws IOException {
+        _ctx = context;
+        _output = context.getSocket().getOutputStream();
     }
 
     public void setStatusCode(HTTP.StatusCode code) {
@@ -24,16 +22,23 @@ public class Response {
     }
 
     public void send() {
-        if (_request.getFileType() == Request.FILE_TYPE.IMG) {
-            sendImage(Renderer.renderImage(_request.getFile()));
-            return;
+        if (_ctx.getRequest().getFileType() == Request.FILE_TYPE.IMG) {
+            if (_ctx.getRequest().requestIsValid()) {
+                sendImage(Renderer.renderImage(_ctx.getRequest().getFile()));
+                return;
+            }
         }
+
         buildContent();
         buildHeader();
         for (final String line : _page) {
-            _writer.write(line);
+            try {
+                _output.write(line.getBytes());
+                _output.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        _writer.flush();
     }
 
     public void close() {
@@ -42,7 +47,6 @@ public class Response {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        _writer.close();
     }
 
     private void buildHeader() {
@@ -51,53 +55,59 @@ public class Response {
 
     private void buildHeader(final int contentLength) {
         String contentType = "text/";
-        switch (_request.getFileType()) {
-            case HTML:
-                contentType += "html";
-                break;
-            case CSS:
-                contentType += "css";
-                break;
-            case IMG:
-                String s = _request.getRequestedFile();
-                contentType = "image/" + s.substring(s.indexOf(".")+1);
-                break;
-            case JS:
-                contentType += "javascript";
-                break;
+        if (_ctx.getRequest().requestIsValid()) {
+            switch (_ctx.getRequest().getFileType()) {
+                case HTML:
+                    contentType += "html";
+                    break;
+                case CSS:
+                    contentType += "css";
+                    break;
+                case IMG:
+                    String s = _ctx.getRequest().getRequestedFile();
+                    contentType = "image/" + s.substring(s.indexOf(".")+1);
+                    break;
+                case JS:
+                    contentType += "javascript";
+                    break;
+            }
+        } else {
+            contentType += "html";
         }
+
 
         _page.add(0, "\r\n\r\n");
         if (contentLength != 0)
-            _page.add(0, "Content length: " + contentLength + "\r\n");
+            _page.add(0, "Content-Length: " + contentLength + "\r\n");
         _page.add(0, "Content-Type: " + contentType + "\r\n");
-//        if (_request.getFileType() == Request.FILE_TYPE.IMG)
+//        if (_ctx.getRequest().getFileType() == Request.FILE_TYPE.IMG && _ctx.getRequest().requestIsValid())
 //            _page.add(0, "Content-Encoding: base64\r\n");
         _page.add(0, "HTTP/1.1 " + _statusCode.getCode() + " OK\r\n");
     }
 
     private void buildContent() {
-        if (_request.requestIsValid()) {
-            _page.addAll(Renderer.render(_request.getFile()));
+        if (_ctx.getRequest().requestIsValid()) {
+            _page.addAll(Renderer.render(_ctx.getRequest().getFile()));
         } else {
-            setStatusCode(HTTP.StatusCode.NOT_FOUND);
-            if (_request.getFileType() == Request.FILE_TYPE.HTML)
-                _page.addAll(Renderer.render(FileManager.getFile("404_s.html")));
+            send404();
         }
     }
 
     private void sendImage(final byte[] image) {
-        buildHeader(image.length);
-        DataOutputStream dos = new DataOutputStream(_output);
+        buildHeader();
         try {
             for (final String line : _page) {
-                dos.writeBytes(line);
+                _output.write(line.getBytes());
             }
-            dos.write(image);
-            dos.flush();
-            dos.close();
+            _output.write(image, 0, image.length);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void send404() {
+        setStatusCode(HTTP.StatusCode.NOT_FOUND);
+        _page.addAll(Renderer.render(FileManager.getFile("404.html")));
+//        if (_ctx.getRequest().getFileType() == Request.FILE_TYPE.HTML)
     }
 }

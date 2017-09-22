@@ -17,13 +17,15 @@ public class Request {
     private FILE_TYPE _fileType = FILE_TYPE.HTML;
     private HTTP.RequestType _type = HTTP.RequestType.UNKNOWN;
     private final InputStream _inputStream;
+    private final Context _ctx;
 
-    private String _host, _file, _parsedFileName;
+    private String _host, _requestedFileString, _parsedFileName;
     private File _requestedFile;
     private boolean _validRequest = false;
 
-    public Request(final InputStream inputStream) {
-        _inputStream = inputStream;
+    public Request(final Context context) throws IOException {
+        _ctx = context;
+        _inputStream = context.getSocket().getInputStream();
         parseRequest();
     }
 
@@ -33,27 +35,6 @@ public class Request {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public String getRequestedFile() {
-        return _file;
-    }
-
-    public String getHost() {
-        return _host;
-    }
-
-    private void parseFileType() {
-        if (_file.contains("css"))
-            _fileType = FILE_TYPE.CSS;
-        else if (_file.contains("img"))
-            _fileType = FILE_TYPE.IMG;
-        else if (_file.contains("js"))
-            _fileType = FILE_TYPE.JS;
-    }
-
-    public FILE_TYPE getFileType() {
-        return _fileType;
     }
 
     private void parseRequest() {
@@ -68,7 +49,7 @@ public class Request {
                 String[] requestParams = line.split(" ");
                 if (lineCount == 0) {
                     _type = HTTP.RequestType.get(requestParams[0]);
-                    _file = requestParams[1];
+                    _requestedFileString = requestParams[1];
                 } else if (lineCount == 1) {
                     _host = requestParams[1];
                 }
@@ -77,26 +58,34 @@ public class Request {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        parseFileType();
+        parseRequestFileType();
         parseFileRequest();
         generateFile();
     }
 
+    private void parseRequestFileType() {
+        if (_requestedFileString.contains("css/"))
+            _fileType = FILE_TYPE.CSS;
+        else if (_requestedFileString.contains("img/"))
+            _fileType = FILE_TYPE.IMG;
+        else if (_requestedFileString.contains("js/"))
+            _fileType = FILE_TYPE.JS;
+        else _fileType = FILE_TYPE.HTML;
+    }
+
     private void parseFileRequest() {
-        String requested = _file;
+        String requested = _requestedFileString;
         requested = requested.replaceFirst("/", "");
         if (requested.equals(""))
             requested = "index.html";
         if (!requested.contains("."))
             requested += ".html";
-//        if (requested.contains("css") || requested.contains("img")){
-//            requested = requested.substring(requested.indexOf("/")+1);
-//        }
         _parsedFileName = requested;
     }
 
     private void generateFile() {
-        File folder = FileManager.getFolderByType(getFileType());
+        if (_fileType == FILE_TYPE.HTML)
+            _parsedFileName = "views" + File.separator + _parsedFileName;
         if (FileManager.getFile(_parsedFileName) != null) {
             _validRequest = true;
             _requestedFile = FileManager.getFile(_parsedFileName);
@@ -112,5 +101,17 @@ public class Request {
 
     public boolean requestIsValid() {
         return _validRequest;
+    }
+
+    public String getRequestedFile() {
+        return _requestedFileString;
+    }
+
+    public String getHost() {
+        return _host;
+    }
+
+    public FILE_TYPE getFileType() {
+        return _fileType;
     }
 }

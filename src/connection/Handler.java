@@ -1,7 +1,6 @@
 package connection;
 
-import http.Request;
-import http.Response;
+import http.Context;
 import logger.IRegistrable;
 import logger.Queue;
 
@@ -11,8 +10,7 @@ import java.net.Socket;
 public class Handler implements IRegistrable, Runnable{
 
     private final Socket _socket;
-    private Request _request;
-    private Response _response;
+    private Context _ctx;
 
     public Handler (final Socket socket) {
         _socket = socket;
@@ -21,13 +19,10 @@ public class Handler implements IRegistrable, Runnable{
     @Override
     public void run() {
         try {
-            _request = new Request(_socket.getInputStream());
+            _ctx = new Context(_socket);
             Queue.put(this);
-            _response = new Response(_socket.getOutputStream(), _request);
-            _response.send();
-            _response.close();
-            _request.close();
-            _socket.close();
+            _ctx.sendResponse();
+            _ctx.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,6 +30,6 @@ public class Handler implements IRegistrable, Runnable{
 
     @Override
     public String toLog() {
-        return _request.getHost() + "\t" +  _request.getRequestedFile() + "\r\n";
+        return _ctx.getRequest().getHost() + "\t" +  _ctx.getRequest().getRequestedFile() + "\r\n";
     }
 }
