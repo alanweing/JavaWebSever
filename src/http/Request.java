@@ -1,7 +1,6 @@
 package http;
 
 import com.sun.istack.internal.Nullable;
-import files.FileManager;
 
 import java.io.*;
 
@@ -14,18 +13,17 @@ public class Request {
         JS
     }
 
-    private FILE_TYPE _fileType = FILE_TYPE.HTML;
-    private HTTP.RequestType _type = HTTP.RequestType.UNKNOWN;
+    private FILE_TYPE _requestType = FILE_TYPE.HTML;
     private final InputStream _inputStream;
     private final Context _ctx;
+    private HttpParser _parser;
 
-    private String _host, _requestedFileString, _parsedFileName;
-    private File _requestedFile;
     private boolean _validRequest = false;
 
     public Request(final Context context) throws IOException {
         _ctx = context;
         _inputStream = context.getSocket().getInputStream();
+        _parser = new HttpParser(_inputStream);
         parseRequest();
     }
 
@@ -37,81 +35,59 @@ public class Request {
         }
     }
 
+    public HttpParser getParser() {
+        return _parser;
+    }
+
     private void parseRequest() {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(_inputStream));
-        String line;
-        int lineCount = 0;
+        HttpParser parser = new HttpParser(_inputStream);
         try {
-            while ((line = reader.readLine()) != null) {
-//                System.out.println(line);
-                if (line.equals(""))
-                    break;
-                String[] requestParams = line.split(" ");
-                if (lineCount == 0) {
-                    _type = HTTP.RequestType.get(requestParams[0]);
-                    _requestedFileString = requestParams[1];
-                } else if (lineCount == 1) {
-                    _host = requestParams[1];
-                }
-                lineCount++;
+            parser.parseRequest();
+            _requestType = parseRequestType(parser.getHeader("accept"));
+            if (_requestType == null) {
+                _ctx.setRequestValidity(false);
+                return;
             }
+
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        parseRequestFileType();
-        parseFileRequest();
-        generateFile();
-    }
-
-    private void parseRequestFileType() {
-        if (_requestedFileString.contains("css/"))
-            _fileType = FILE_TYPE.CSS;
-        else if (_requestedFileString.contains("img/"))
-            _fileType = FILE_TYPE.IMG;
-        else if (_requestedFileString.contains("js/"))
-            _fileType = FILE_TYPE.JS;
-        else _fileType = FILE_TYPE.HTML;
-    }
-
-    private void parseFileRequest() {
-        String requested = _requestedFileString;
-        requested = requested.replaceFirst("/", "");
-        if (requested.equals(""))
-            requested = "index.html";
-        if (!requested.contains("."))
-            requested += ".html";
-        _parsedFileName = requested;
-    }
-
-    private void generateFile() {
-        if (_fileType == FILE_TYPE.HTML)
-            _parsedFileName = "views" + File.separator + _parsedFileName;
-        if (FileManager.getFile(_parsedFileName) != null) {
-            _validRequest = true;
-            _requestedFile = FileManager.getFile(_parsedFileName);
-        } else {
-            _validRequest = false;
+            _ctx.setRequestValidity(false);
         }
     }
+
 
     @Nullable
-    public File getFile() {
-        return _requestedFile;
+    private FILE_TYPE parseRequestType(final String accept) {
+        if (accept == null || accept.equals(""))
+            return null;
+        String[] acceptedParams = accept.split(",");
+        if (acceptedParams.length == 0 || acceptedParams[0].equals("") || !acceptedParams[0].contains("/"))
+            return null;
+        acceptedParams = acceptedParams[0].split("/");
+        final String accepted = acceptedParams[1];
+        switch (accepted) {
+            case "html":
+                return FILE_TYPE.HTML;
+            case "css":
+                return FILE_TYPE.CSS;
+            case "*":
+                return FILE_TYPE.IMG;
+            case "javascript":
+                return FILE_TYPE.JS;
+            default:
+                return null;
+        }
     }
 
     public boolean requestIsValid() {
         return _validRequest;
     }
 
-    public String getRequestedFile() {
-        return _requestedFileString;
-    }
-
     public String getHost() {
-        return _host;
+        return _parser.getHeader("host");
     }
 
     public FILE_TYPE getFileType() {
-        return _fileType;
+        return _requestType;
     }
 }

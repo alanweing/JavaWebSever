@@ -7,12 +7,7 @@ public final class Context {
     private final Request _request;
     private final Response _response;
     private final Socket _socket;
-
-    public Context(final Socket socket, final Request request, final Response response) {
-        _request = request;
-        _response = response;
-        _socket = socket;
-    }
+    private boolean _validRequest = true;
 
     public Context(final Socket socket) throws IOException {
         _socket = socket;
@@ -30,8 +25,12 @@ public final class Context {
         }
     }
 
-    public void sendResponse() {
-        _response.send();
+    public void setRequestValidity(final boolean isValid) {
+        _validRequest = isValid;
+    }
+
+    public boolean isRequestValid() {
+        return _validRequest;
     }
 
     public Response getResponse() {

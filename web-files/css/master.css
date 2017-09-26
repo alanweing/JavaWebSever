@@ -1,12 +1,76 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway');
+@import url('https://fonts.googleapis.com/css?family=Raleway|Press+Start+2P');
+
+html {
+    height: 100%;
+}
 body {
     font-family: 'Raleway', sans-serif;
-    background: #FFF;
+    background: linear-gradient(75deg, #3F51B5, #FF5722, #FFC107);
+    color: #FFF;
+    min-height: 100%;
 }
 
-.aw-not-found {
-    text-align: center;
+.aw-nf-header {
+    height: 75px;
     width: 100%;
-    margin: 5% auto;
+    text-align: center;
+}
+
+.aw-nf-header h1 {
+    font-family: 'Press Start 2P', cursive;
+    color: #FFF;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 20px 0 0 0;
+    font-size: 2em;
+}
+
+.aw-nf h1 {
+    font-size: 5em;
+    font-weight: bold;
+}
+
+.aw-nf h2 {
+    font-weight: 100;
+    font-size: 2em;
+    margin-top: 2.5%;
+}
+
+.aw-nf img {
+    bottom: 0;
+    position: fixed;
     display: block;
+    margin: 0 auto;
+    left: -10%;
+}
+
+.aw-nf {
+    bottom: 0;
+    right: 0;
+    top: 0;
+    left: 0;
+    margin: auto;
+    height: 250px;
+    width: 800px;
+    position: absolute;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.aw-nf-text-wrapper {
+    border: .5em solid #FFF;
+    padding: 5% 0 7.5% 0;
+}
+
+.aw-nf-footer {
+    position: fixed;
+    bottom: -3%;
+    width: 100%;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10em;
+}
+
+.aw-z-index-5 {
+    box-shadow: 0 2px 40px 10px rgba(21, 21, 21, .4);
 }
