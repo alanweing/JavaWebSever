@@ -1,10 +1,14 @@
 package http;
 
 import controllers.IController;
+import files.FileCache;
+import files.FileManager;
+import http.exceptions.FileNotFoundException;
 import http.exceptions.MethodNotAllowedException;
 import http.exceptions.RouteAlreadyImplementedException;
 import http.exceptions.RouteNotImplementedException;
 
+import java.io.File;
 import java.util.HashMap;
 
 public abstract class Router {
@@ -46,15 +50,26 @@ public abstract class Router {
         put(route, Method.POST, controller);
     }
 
-    public static void handleRequest(final Context ctx) throws RouteNotImplementedException, MethodNotAllowedException {
+    public static void handleRequest(final Context ctx) throws RouteNotImplementedException, MethodNotAllowedException, FileNotFoundException {
         final String route = ctx.getRequest().getParser().getRequestURL();
         final Method method = getMethod(ctx.getRequest().getParser().getMethod());
-
-        if (!_routes.containsKey(route))
-            throw new RouteNotImplementedException(route);
-        if (!_routes.get(route).containsKey(method))
-            throw new MethodNotAllowedException(route, method);
-        _routes.get(route).get(method).handleConnection(ctx);
+        final Request.FILE_TYPE fileType = ctx.getRequest().getFileType();
+        if (fileType != Request.FILE_TYPE.HTML) {
+            final File file = FileManager.getFile(route);
+            if (file == null)
+                throw new FileNotFoundException();
+            if (fileType == Request.FILE_TYPE.IMG) {
+                ctx.getResponse().send(FileCache.getImage(route));
+            } else {
+                ctx.getResponse().send(FileCache.getFile(route));
+            }
+        } else {
+            if (!_routes.containsKey(route))
+                throw new RouteNotImplementedException(route);
+            if (!_routes.get(route).containsKey(method))
+                throw new MethodNotAllowedException(route, method);
+            _routes.get(route).get(method).handleConnection(ctx);
+        }
     }
 
 }

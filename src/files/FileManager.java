@@ -31,7 +31,7 @@ public final class FileManager {
     }
 
     @Nullable
-    static File getFile(final String file) {
+    public static File getFile(final String file) {
         final String s = ROOT.getAbsolutePath() + File.separator + file;
         for (final File f : _files) {
             if (f.getAbsolutePath().equals(s) || f.getName().equals(file)) {
@@ -42,7 +42,7 @@ public final class FileManager {
     }
 
     @Nullable
-    static String[] readFile(@NotNull final File file) {
+    public static String[] readFile(@NotNull final File file) {
         final ArrayList<String> lines = new ArrayList<>();
         try {
             FileReader reader = new FileReader(file);
@@ -60,7 +60,7 @@ public final class FileManager {
     }
 
     @Nullable
-    static byte[] readFileBytes(@NotNull final File file) {
+    public static byte[] readFileBytes(@NotNull final File file) {
         byte[] finalBytes = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(file);

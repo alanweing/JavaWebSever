@@ -2,6 +2,7 @@ package connection;
 
 import http.Context;
 import http.Router;
+import http.exceptions.FileNotFoundException;
 import http.exceptions.MethodNotAllowedException;
 import http.exceptions.RouteNotImplementedException;
 import logger.IRegistrable;
@@ -26,11 +27,13 @@ public class Handler implements IRegistrable, Runnable {
             Queue.put(this);
             try {
                 Router.handleRequest(_ctx);
-            } catch (RouteNotImplementedException e) {
+            } catch (RouteNotImplementedException | FileNotFoundException e) {
                 // send 404
+                _ctx.getResponse().send404();
                 e.printStackTrace();
             } catch (MethodNotAllowedException e) {
                 // send message ?
+                _ctx.getResponse().send500();
                 e.printStackTrace();
             }
             _ctx.close();

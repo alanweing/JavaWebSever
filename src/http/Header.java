@@ -39,8 +39,8 @@ public class Header {
         return setContentType(contentType.getType());
     }
 
-    public Header setStatus(final short status) {
-        _header.put("HTTP/1.1", Short.toString(status).concat(" ").concat(HttpParser.getHttpReply(status)));
+    public Header setStatus(final int status) {
+        _header.put("HTTP/1.1", Integer.toString(status).concat(" ").concat(HttpParser.getHttpReply(status)));
         return this;
     }
 

@@ -6,14 +6,14 @@ import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 
-final class FileCache {
+public final class FileCache {
     private static final HashMap<String, SoftReference<String[]>> _fileCache = new HashMap<>();
     private static final HashMap<String, SoftReference<byte[]>> _imageCache = new HashMap<>();
     private static final Object _lock = new Object();
     private FileCache() {}
 
     @Nullable
-    static String[] getFile(final String pathToFile) {
+    public static String[] getFile(final String pathToFile) {
         final File file = FileManager.getFile(pathToFile);
         String[] fileString;
         if (file == null)
@@ -33,7 +33,7 @@ final class FileCache {
         return fileString;
     }
 
-    static byte[] getImage(final String pathToImage) {
+    public static byte[] getImage(final String pathToImage) {
         final File file = FileManager.getFile(pathToImage);
         byte[] fileString;
         if (file == null)
