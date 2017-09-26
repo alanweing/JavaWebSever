@@ -7,39 +7,49 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 
 final class FileCache {
-    private static final HashMap<String, SoftReference<File>> _cache = new HashMap<>();
+    private static final HashMap<String, SoftReference<String[]>> _fileCache = new HashMap<>();
+    private static final HashMap<String, SoftReference<byte[]>> _imageCache = new HashMap<>();
     private static final Object _lock = new Object();
     private FileCache() {}
 
     @Nullable
-    private static SoftReference<File> loadFromFile(final String pathToFile) {
+    static String[] getFile(final String pathToFile) {
         final File file = FileManager.getFile(pathToFile);
-        return file != null ? _cache.put(pathToFile, new SoftReference<>(file)) : null;
-    }
-
-    @Nullable
-    static File get(final String pathToFile) {
+        String[] fileString;
+        if (file == null)
+            return null;
         synchronized (_lock) {
-            if (!_cache.containsKey(pathToFile))
-                return null;
-            SoftReference<File> reference = _cache.get(pathToFile);
-            // someone already accesses the page before
-            if (reference != null) {
-                File f = reference.get();
-                if (f != null)
-                    return f;
-                    // the GC collected the reference
-                else {
-                    reference = loadFromFile(pathToFile);
-                    return reference != null ? reference.get() : null;
-                }
+            SoftReference<String[]> ref = _fileCache.get(pathToFile);
+            // no one accessed the page before, so there is nothing in the cache
+            if (ref == null) {
+                ref = new SoftReference<>(FileManager.readFile(file));
+                fileString = _fileCache.put(pathToFile, ref).get();
             }
-            // no one accessed the page
+            // someone already required the file
             else {
-                reference = loadFromFile(pathToFile);
-                return reference != null ? reference.get() : null;
+                fileString = _fileCache.get(pathToFile).get();
             }
         }
+        return fileString;
     }
 
+    static byte[] getImage(final String pathToImage) {
+        final File file = FileManager.getFile(pathToImage);
+        byte[] fileString;
+        if (file == null)
+            return null;
+        synchronized (_lock) {
+            SoftReference<byte[]> ref = _imageCache.get(pathToImage);
+            // no one accessed the page before, so there is nothing in the cache
+            if (ref == null) {
+                ref = new SoftReference<>(FileManager.readFileBytes(file));
+                fileString = _imageCache.put(pathToImage, ref).get();
+            }
+            // someone already required the file
+            else {
+                fileString = _imageCache.get(pathToImage).get();
+            }
+        }
+        return fileString;
+    }
 }
