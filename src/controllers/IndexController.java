@@ -6,6 +6,6 @@ public class IndexController extends Controller implements IController {
 
     @Override
     public void handleConnection(Context ctx) {
-
+        sendPage(ctx, "views/index.html");
     }
 }

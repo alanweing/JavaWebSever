@@ -51,7 +51,9 @@ public abstract class Router {
     }
 
     public static void handleRequest(final Context ctx) throws RouteNotImplementedException, MethodNotAllowedException, FileNotFoundException {
-        final String route = ctx.getRequest().getParser().getRequestURL();
+        String route = ctx.getRequest().getParser().getRequestURL();
+        if (route.equals(""))
+            route = "/";
         final Method method = getMethod(ctx.getRequest().getParser().getMethod());
         final Request.FILE_TYPE fileType = ctx.getRequest().getFileType();
         if (fileType != Request.FILE_TYPE.HTML) {
@@ -59,8 +61,13 @@ public abstract class Router {
             if (file == null)
                 throw new FileNotFoundException();
             if (fileType == Request.FILE_TYPE.IMG) {
+                ctx.getResponse().getHeader().setContentType(Header.ContentType.IMG);
                 ctx.getResponse().send(FileCache.getImage(route));
             } else {
+                if (fileType == Request.FILE_TYPE.CSS)
+                    ctx.getResponse().getHeader().setContentType(Header.ContentType.CSS);
+                else if (fileType == Request.FILE_TYPE.JS)
+                    ctx.getResponse().getHeader().setContentType(Header.ContentType.JAVASCRIPT);
                 ctx.getResponse().send(FileCache.getFile(route));
             }
         } else {

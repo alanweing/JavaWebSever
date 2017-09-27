@@ -40,10 +40,10 @@ public class Request {
     }
 
     private void parseRequest() {
-        HttpParser parser = new HttpParser(_inputStream);
+        _parser = new HttpParser(_inputStream);
         try {
-            parser.parseRequest();
-            _requestType = parseRequestType(parser.getHeader("accept"));
+            _parser.parseRequest();
+            _requestType = parseRequestType(_parser.getHeader("accept"));
             if (_requestType == null) {
                 _ctx.setRequestValidity(false);
                 return;
@@ -71,6 +71,8 @@ public class Request {
             case "css":
                 return FILE_TYPE.CSS;
             case "*":
+                if (_parser.getRequestURL().contains("js"))
+                    return FILE_TYPE.JS;
                 return FILE_TYPE.IMG;
             case "javascript":
                 return FILE_TYPE.JS;

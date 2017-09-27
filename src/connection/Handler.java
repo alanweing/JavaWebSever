@@ -24,7 +24,6 @@ public class Handler implements IRegistrable, Runnable {
     public void run() {
         try {
             _ctx = new Context(_socket);
-            Queue.put(this);
             try {
                 Router.handleRequest(_ctx);
             } catch (RouteNotImplementedException | FileNotFoundException e) {
@@ -36,6 +35,7 @@ public class Handler implements IRegistrable, Runnable {
                 _ctx.getResponse().send500();
                 e.printStackTrace();
             }
+            Queue.put(this);
             _ctx.close();
         } catch (IOException e) {
             e.printStackTrace();

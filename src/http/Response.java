@@ -1,5 +1,6 @@
 package http;
 
+import com.sun.istack.internal.Nullable;
 import files.FileCache;
 
 import java.io.*;
@@ -17,7 +18,8 @@ public class Response {
         _header = new Header();
     }
 
-    public void send(final String[] data) {
+    public void send(@Nullable final String[] data) {
+        if (data == null) return;
         final String[] header = _header.build();
         String[] finalString = Stream.concat(Arrays.stream(header), Arrays.stream(data)).toArray(String[]::new);
         for (final String line : finalString) {
@@ -32,13 +34,13 @@ public class Response {
     public void send404() {
         _header.setStatus(404);
         _header.setContentType(Header.ContentType.HTML);
-        send(FileCache.getFile("/views/404.html"));
+        send(FileCache.getFile("views/404.html"));
     }
 
     public void send500() {
         _header.setStatus(500);
         _header.setContentType(Header.ContentType.HTML);
-        send(FileCache.getFile("/views/500.html"));
+        send(FileCache.getFile("views/500.html"));
     }
 
     public void send(final byte[] data) {

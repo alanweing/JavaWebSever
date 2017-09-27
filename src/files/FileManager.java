@@ -31,7 +31,9 @@ public final class FileManager {
     }
 
     @Nullable
-    public static File getFile(final String file) {
+    public static File getFile(@NotNull String file) {
+        if (file.charAt(0) == '/')
+            file = file.substring(1, file.length());
         final String s = ROOT.getAbsolutePath() + File.separator + file;
         for (final File f : _files) {
             if (f.getAbsolutePath().equals(s) || f.getName().equals(file)) {

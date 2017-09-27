@@ -40,7 +40,7 @@ public class Header {
     }
 
     public Header setStatus(final int status) {
-        _header.put("HTTP/1.1", Integer.toString(status).concat(" ").concat(HttpParser.getHttpReply(status)));
+        _header.put("HTTP/1.1", HttpParser.getHttpReply(status));
         return this;
     }
 

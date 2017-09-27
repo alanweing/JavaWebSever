@@ -23,9 +23,10 @@ public final class FileCache {
             // no one accessed the page before, so there is nothing in the cache
             if (ref == null) {
                 ref = new SoftReference<>(FileManager.readFile(file));
-                fileString = _fileCache.put(pathToFile, ref).get();
+                _fileCache.put(pathToFile, ref);
+                fileString = ref.get();
             }
-            // someone already required the file
+            // someone already requested the file
             else {
                 fileString = _fileCache.get(pathToFile).get();
             }
@@ -43,7 +44,8 @@ public final class FileCache {
             // no one accessed the page before, so there is nothing in the cache
             if (ref == null) {
                 ref = new SoftReference<>(FileManager.readFileBytes(file));
-                fileString = _imageCache.put(pathToImage, ref).get();
+                _imageCache.put(pathToImage, ref);
+                fileString = ref.get();
             }
             // someone already required the file
             else {

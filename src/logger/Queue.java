@@ -22,7 +22,6 @@ public final class Queue implements Runnable {
                 if (_queue.isEmpty()) {
                     try {
                         _emptyLock.wait();
-
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
