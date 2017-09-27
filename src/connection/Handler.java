@@ -44,6 +44,10 @@ public class Handler implements IRegistrable, Runnable {
 
     @Override
     public String toLog() {
-        return _ctx.getRequest().getHost() + "\t" +  _ctx.getRequest().getParser().getRequestURL() + "\r\n";
+        return _ctx.getRequest().getHost() + "\t" +
+                _ctx.getRequest().getParser().getRequestURL() + "\t" +
+                _ctx.getRequest().getParser().getMethod() + "\t" +
+                _ctx.getRequest().getFileType().name() +
+                "\r\n";
     }
 }

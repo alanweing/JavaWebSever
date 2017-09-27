@@ -11,17 +11,15 @@ public final class Queue implements Runnable {
 
     private static final String LOG_PATH = new File(System.getProperty("user.dir"), "log.txt").getAbsolutePath();
     private static final ArrayList<IRegistrable> _queue = new ArrayList<>();
-    private static final Object
-            _queueLock = new Object(),
-            _emptyLock = new Object();
+    private static final Object _queueLock = new Object();
 
     @Override
     public void run() {
         while (Server.isOnline()) {
-            synchronized (_emptyLock) {
+            synchronized (_queueLock) {
                 if (_queue.isEmpty()) {
                     try {
-                        _emptyLock.wait();
+                        _queueLock.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -34,9 +32,7 @@ public final class Queue implements Runnable {
     public static void put(final IRegistrable registrable) {
         synchronized (_queueLock) {
             _queue.add(registrable);
-            synchronized (_emptyLock) {
-                _emptyLock.notifyAll();
-            }
+            _queueLock.notifyAll();
         }
     }
 
