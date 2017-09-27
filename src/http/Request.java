@@ -65,20 +65,21 @@ public class Request {
             return null;
         acceptedParams = acceptedParams[0].split("/");
         final String accepted = acceptedParams[1];
-        switch (accepted) {
-            case "html":
-                return FILE_TYPE.HTML;
-            case "css":
-                return FILE_TYPE.CSS;
-            case "*":
-                if (_parser.getRequestURL().contains("js"))
-                    return FILE_TYPE.JS;
-                return FILE_TYPE.IMG;
-            case "javascript":
+        final String acceptType = acceptedParams[0];
+        if (acceptType.equals("image")) {
+            return FILE_TYPE.IMG;
+        } else if (accepted.equals("html")) {
+            return FILE_TYPE.HTML;
+        } else if (accepted.equals("css")) {
+            return FILE_TYPE.CSS;
+        } else if (accepted.equals("*")) {
+            if (_parser.getRequestURL().contains("js"))
                 return FILE_TYPE.JS;
-            default:
-                return null;
+            return FILE_TYPE.IMG;
+        } else if (accepted.equals("script") || accepted.equals("javascript")) {
+            return FILE_TYPE.JS;
         }
+        return null;
     }
 
     public boolean requestIsValid() {

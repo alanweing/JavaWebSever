@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class Server {
 
-    public static final short PORT = 3001;
+    public static final short PORT = 3010;
 
     private static ServerSocket _serverSocket;
     private static volatile boolean _online = false;
