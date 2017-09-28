@@ -20,6 +20,7 @@ public class Server {
     }
 
     public static void initialize(final short port) {
+        Runtime.getRuntime().addShutdownHook(new Thread(Server::shutdown));
         try {
             _serverSocket = new ServerSocket(port);
             _online = true;

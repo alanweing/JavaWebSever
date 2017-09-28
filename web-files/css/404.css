@@ -41,7 +41,7 @@ body {
     position: fixed;
     display: block;
     margin: 0 auto;
-    left: -10%;
+    left: -12em;
 }
 
 .aw-nf {
@@ -59,6 +59,7 @@ body {
 
 .aw-nf-text-wrapper {
     border: .5em solid #FFF;
+    border-radius: 1em;
     padding: 5% 0 7.5% 0;
 }
 
@@ -73,4 +74,10 @@ body {
 
 .aw-z-index-5 {
     box-shadow: 0 2px 40px 10px rgba(21, 21, 21, .4);
+}
+
+@media (max-width: 1400px) {
+    .aw-nf img {
+        left: -20em;
+    }
 }
