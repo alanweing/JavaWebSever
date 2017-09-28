@@ -42,7 +42,8 @@ public final class INPERequest implements Runnable {
     private void doRequest() {
         _lastRequest = _get.request();
         synchronized (_parserLock) {
-            _inpeParser = new INPEXMLParser(_lastRequest);
+            if (_lastRequest != null)
+                _inpeParser = new INPEXMLParser(_lastRequest);
         }
     }
 

@@ -14,10 +14,12 @@ public class AWEngine {
         final ArrayList<String> rendered = new ArrayList<>();
         Matcher matcher;
         for (final String line : file) {
+            boolean match = false;
             matcher = PATTERN.matcher(line);
             final StringBuilder sb = new StringBuilder();
             int i = 0;
             while (matcher.find()) {
+                match = true;
                 final String key = matcher.group(1).trim();
                 final String newValue = map.get(key);
                 sb.append(line.substring(i, matcher.start()));
@@ -26,7 +28,7 @@ public class AWEngine {
                 sb.append(newValue);
                 i = matcher.end();
             }
-            rendered.add(sb.toString());
+            rendered.add(match ? sb.toString() : line);
         }
         return rendered.toArray(new String[rendered.size()]);
     }
