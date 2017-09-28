@@ -1,6 +1,7 @@
 package http;
 
 import connection.Handler;
+import connection.INPERequest;
 import logger.Queue;
 import files.FileManager;
 
@@ -35,6 +36,7 @@ public class Server {
     }
 
     public static void autoInitialize() {
+        INPERequest.initializeRequests();
         FileManager.initialize();
         initialize();
         new Thread(new Queue()).start();
@@ -46,7 +48,7 @@ public class Server {
             return;
         }
         new Thread(() -> {
-            System.out.println("Server is listening");
+            System.out.println("Server is listening on PORT: ".concat(Integer.toString(PORT)));
             while (_online) {
                 try {
                     Socket s = _serverSocket.accept();

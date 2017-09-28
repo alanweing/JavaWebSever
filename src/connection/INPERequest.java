@@ -2,6 +2,7 @@ package connection;
 
 import com.sun.istack.internal.Nullable;
 import http.GET;
+import http.Server;
 import xml.INPEXMLParser;
 
 public final class INPERequest implements Runnable {
@@ -9,8 +10,7 @@ public final class INPERequest implements Runnable {
     private static final byte REQUEST_INTERVAL = 30;
 
     private static INPERequest _instance;
-    private final Object _lastRequestLock = new Object(),
-            _parserLock = new Object();
+    private final Object _parserLock = new Object();
     private final GET _get;
 
     private INPEXMLParser _inpeParser;
@@ -33,13 +33,6 @@ public final class INPERequest implements Runnable {
     }
 
     @Nullable
-    public String getLastRequest() {
-        synchronized (_lastRequestLock) {
-            return _lastRequest;
-        }
-    }
-
-    @Nullable
     public INPEXMLParser getParser() {
         synchronized (_parserLock) {
             return _inpeParser;
@@ -47,19 +40,16 @@ public final class INPERequest implements Runnable {
     }
 
     private void doRequest() {
-        synchronized (_lastRequestLock) {
-            _lastRequest = _get.request();
-        } synchronized (_parserLock) {
+        _lastRequest = _get.request();
+        synchronized (_parserLock) {
             _inpeParser = new INPEXMLParser(_lastRequest);
         }
     }
 
-
-
     @Override
     public void run() {
         doRequest();
-        while (true) {
+        while (Server.isOnline()) {
             try {
                 Thread.sleep(REQUEST_INTERVAL * 1000);
             } catch (InterruptedException e) {
