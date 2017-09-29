@@ -1,0 +1,15 @@
+.aw-loading-wrapper {
+    height: 2em;
+    margin-top: 5%;
+}
+
+.aw-loading::before {
+
+}
+
+.aw-loading {
+    background: rgba(21,21,21,.1);
+    width: 50vw;
+    height: 100%;
+    margin: 0 auto;
+}

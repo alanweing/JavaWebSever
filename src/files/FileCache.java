@@ -1,6 +1,7 @@
 package files;
 
 import com.sun.istack.internal.Nullable;
+import http.Server;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
@@ -14,6 +15,8 @@ public final class FileCache {
 
     @Nullable
     public static String[] getFile(final String pathToFile) {
+        if (!Server.USE_CACHE)
+            return FileManager.readFile(FileManager.getFile(pathToFile));
         final File file = FileManager.getFile(pathToFile);
         String[] fileString;
         if (file == null)
@@ -35,6 +38,8 @@ public final class FileCache {
     }
 
     public static byte[] getImage(final String pathToImage) {
+        if (Server.USE_CACHE)
+            return FileManager.readFileBytes(FileManager.getFile(pathToImage));
         final File file = FileManager.getFile(pathToImage);
         byte[] fileString;
         if (file == null)
