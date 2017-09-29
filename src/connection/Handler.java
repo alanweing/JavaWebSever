@@ -7,6 +7,7 @@ import http.exceptions.MethodNotAllowedException;
 import http.exceptions.RouteNotImplementedException;
 import logger.IRegistrable;
 import logger.Queue;
+import util.Debug;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -29,16 +30,16 @@ public class Handler implements IRegistrable, Runnable {
             } catch (RouteNotImplementedException | FileNotFoundException e) {
                 // send 404
                 _ctx.getResponse().send404();
-                e.printStackTrace();
+                Debug.log(e.getMessage());
             } catch (MethodNotAllowedException e) {
                 // send message ?
                 _ctx.getResponse().send500();
-                e.printStackTrace();
+                Debug.log(e.getMessage());
             }
             Queue.put(this);
             _ctx.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
     }
 
@@ -49,5 +50,10 @@ public class Handler implements IRegistrable, Runnable {
                 _ctx.getRequest().getParser().getMethod() + "\t" +
                 _ctx.getRequest().getFileType().name() +
                 "\r\n";
+    }
+
+    @Override
+    public String getLogName() {
+        return "log.txt";
     }
 }

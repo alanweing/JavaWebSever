@@ -1,5 +1,7 @@
 package files;
 
+import util.Debug;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +26,7 @@ public final class FileWriter {
             try {
                 Files.write(_path, toWrite, StandardOpenOption.APPEND);
             } catch (IOException e) {
-                e.printStackTrace();
+                Debug.log(e.getMessage());
             }
         }
     }
@@ -38,7 +40,7 @@ public final class FileWriter {
                 try {
                     f.createNewFile();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Debug.log(e.getMessage());
                 }
             }
             _paths.put(path, new FileWriter(path));

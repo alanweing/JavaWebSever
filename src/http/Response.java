@@ -2,6 +2,7 @@ package http;
 
 import com.sun.istack.internal.Nullable;
 import files.FileCache;
+import util.Debug;
 
 import java.io.*;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ public class Response {
             try {
                 _output.write(line.getBytes());
             } catch (IOException e) {
-                e.printStackTrace();
+                Debug.log(e.getMessage());
             }
         }
     }
@@ -49,13 +50,13 @@ public class Response {
             try {
                 _output.write(line.getBytes());
             } catch (IOException e) {
-                e.printStackTrace();
+                Debug.log(e.getMessage());
             }
         } for (final byte b : data) {
             try {
                 _output.write(b);
             } catch (IOException e) {
-                e.printStackTrace();
+                Debug.log(e.getMessage());
             }
         }
 
@@ -65,7 +66,7 @@ public class Response {
         try {
             _output.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
     }
 

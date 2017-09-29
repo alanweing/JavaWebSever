@@ -4,6 +4,7 @@ import connection.INPERequest;
 import files.FileCache;
 import http.Context;
 import util.AWEngine;
+import util.Debug;
 import util.KeyNotDefinedException;
 import xml.INPEXMLParser;
 
@@ -12,9 +13,13 @@ import java.util.HashMap;
 public class WeatherController extends Controller implements IController {
     @Override
     public void handleConnection(Context ctx) {
-//        sendPage(ctx, "views/weather.html");
         final HashMap<String, String> map = new HashMap<>();
         String[] page = null;
+        if (INPERequest.getInstance().getParser() == null) {
+            // could'nt make a request to the INPEServer
+            ctx.getResponse().send500();
+            return;
+        }
         map.put("weatherDescription", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.tempo_desc));
         map.put("pressure", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.pressao));
         map.put("temperature", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.temperatura));
@@ -26,10 +31,11 @@ public class WeatherController extends Controller implements IController {
         try {
             page = AWEngine.parseFile(FileCache.getFile("views/weather.html"), map);
         } catch (KeyNotDefinedException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
         if (page == null)
             ctx.getResponse().send500();
-        ctx.getResponse().send(page);
+        else
+            ctx.getResponse().send(page);
     }
 }

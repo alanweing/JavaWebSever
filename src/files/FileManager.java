@@ -2,6 +2,7 @@ package files;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import util.Debug;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public final class FileManager {
             bReader.close();
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
         return lines.size() > 0 ? lines.toArray(new String[lines.size()]) : null;
     }
@@ -72,7 +73,7 @@ public final class FileManager {
             bufferedInputStream.close();
             fileInputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
         return finalBytes;
     }

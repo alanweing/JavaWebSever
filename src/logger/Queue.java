@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public final class Queue implements Runnable {
 
-    private static final String LOG_PATH = new File(System.getProperty("user.dir"), "log.txt").getAbsolutePath();
+    private static final String ROOT_PATH = new File(System.getProperty("user.dir")).getAbsolutePath();
     private static final ArrayList<IRegistrable> _queue = new ArrayList<>();
     private static final Object _queueLock = new Object();
 
@@ -24,7 +24,8 @@ public final class Queue implements Runnable {
                         e.printStackTrace();
                     }
                 }
-                FileWriter.getInstance(LOG_PATH).write(get().toLog().getBytes());
+                final IRegistrable registrable = get();
+                FileWriter.getInstance(ROOT_PATH + File.separator + registrable.getLogName()).write(registrable.toLog().getBytes());
             }
         }
     }
@@ -32,7 +33,8 @@ public final class Queue implements Runnable {
     public static void put(final IRegistrable registrable) {
         synchronized (_queueLock) {
             _queue.add(registrable);
-            _queueLock.notifyAll();
+            // notify all??
+            _queueLock.notify();
         }
     }
 

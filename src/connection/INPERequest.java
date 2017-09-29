@@ -3,6 +3,7 @@ package connection;
 import com.sun.istack.internal.Nullable;
 import http.GET;
 import http.Server;
+import util.Debug;
 import xml.INPEXMLParser;
 
 public final class INPERequest implements Runnable {
@@ -54,7 +55,7 @@ public final class INPERequest implements Runnable {
             try {
                 Thread.sleep(REQUEST_INTERVAL * 1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Debug.log(e.getMessage());
             }
             doRequest();
         }

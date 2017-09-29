@@ -6,6 +6,7 @@ import http.Router;
 import http.Server;
 import http.exceptions.RouteAlreadyImplementedException;
 import util.AWEngine;
+import util.Debug;
 import util.KeyNotDefinedException;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class Main {
             Router.get("/weather", new WeatherController());
             Server.autoInitialize();
         } catch (RouteAlreadyImplementedException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());;
         }
 //        HashMap<String, String> map = new HashMap<>();
 //        map.put("aloha", "trocaAloha");

@@ -1,6 +1,7 @@
 package http;
 
 import com.sun.istack.internal.Nullable;
+import util.Debug;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public final class GET {
                 stringBuilder.append(line);
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
         final String finalString = stringBuilder.toString();
         return finalString.equals("") ? null : finalString;

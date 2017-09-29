@@ -1,5 +1,7 @@
 package http;
 
+import util.Debug;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -21,7 +23,7 @@ public final class Context {
         try {
             _socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
     }
 

@@ -4,6 +4,7 @@ import connection.Handler;
 import connection.INPERequest;
 import logger.Queue;
 import files.FileManager;
+import util.Debug;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -28,7 +29,7 @@ public class Server {
             _online = true;
         } catch (IOException e) {
             _serverSocket = null;
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
     }
 
@@ -55,7 +56,7 @@ public class Server {
                     Socket s = _serverSocket.accept();
                     new Thread(new Handler(s)).start();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Debug.log(e.getMessage());
                 }
             }
         }).start();

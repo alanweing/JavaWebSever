@@ -1,6 +1,7 @@
 package http;
 
 import com.sun.istack.internal.Nullable;
+import util.Debug;
 
 import java.io.*;
 
@@ -31,7 +32,7 @@ public class Request {
         try {
             _inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
         }
     }
 
@@ -50,7 +51,7 @@ public class Request {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.log(e.getMessage());
             _ctx.setRequestValidity(false);
         }
     }
