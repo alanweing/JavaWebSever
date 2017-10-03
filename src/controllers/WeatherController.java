@@ -3,6 +3,7 @@ package controllers;
 import connection.INPERequest;
 import files.FileCache;
 import http.Context;
+import jsonmodel.WeatherResponseModel;
 import util.AWEngine;
 import util.Debug;
 import util.KeyNotDefinedException;
@@ -20,18 +21,19 @@ public class WeatherController extends Controller implements IController {
             ctx.getResponse().send500();
             return;
         }
-        map.put("weatherDescription", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.tempo_desc));
-        map.put("pressure", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.pressao));
-        map.put("temperature", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.temperatura));
-        map.put("humidity", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.umidade));
-        map.put("windDirection", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.vento_dir));
-        map.put("visibility", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.visibilidade));
-        map.put("lastUpdate", INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.atualizacao));
-        map.put("background", "404.jpg");
+        final WeatherResponseModel responseModel = new WeatherResponseModel();
+        map.put("weatherDescription", responseModel.getWeather_description());
+        map.put("pressure", responseModel.getPressure());
+        map.put("temperature", responseModel.getTemperature());
+        map.put("humidity", responseModel.getHumidity());
+        map.put("windDirection", responseModel.getWind_direction());
+        map.put("visibility", responseModel.getVisibility());
+        map.put("lastUpdate", responseModel.getLast_update());
+        map.put("background", responseModel.getBackground());
         try {
             page = AWEngine.parseFile(FileCache.getFile("views/weather.html"), map);
         } catch (KeyNotDefinedException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
         if (page == null)
             ctx.getResponse().send500();

@@ -29,7 +29,7 @@ public class XMLParser {
             DocumentBuilder builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(toParse)));
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
         _document = doc;
     }

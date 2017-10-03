@@ -30,16 +30,16 @@ public class Handler implements IRegistrable, Runnable {
             } catch (RouteNotImplementedException | FileNotFoundException e) {
                 // send 404
                 _ctx.getResponse().send404();
-                Debug.log(e.getMessage());
+                Debug.log(e);
             } catch (MethodNotAllowedException e) {
                 // send message ?
                 _ctx.getResponse().send500();
-                Debug.log(e.getMessage());
+                Debug.log(e);
             }
             Queue.put(this);
             _ctx.close();
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
     }
 

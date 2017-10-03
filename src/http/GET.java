@@ -30,7 +30,7 @@ public final class GET {
                 stringBuilder.append(line);
             reader.close();
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
         final String finalString = stringBuilder.toString();
         return finalString.equals("") ? null : finalString;

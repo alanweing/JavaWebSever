@@ -57,7 +57,7 @@ public final class FileManager {
             bReader.close();
             reader.close();
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
         return lines.size() > 0 ? lines.toArray(new String[lines.size()]) : null;
     }
@@ -73,7 +73,7 @@ public final class FileManager {
             bufferedInputStream.close();
             fileInputStream.close();
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
         return finalBytes;
     }

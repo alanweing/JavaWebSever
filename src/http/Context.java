@@ -23,7 +23,7 @@ public final class Context {
         try {
             _socket.close();
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
     }
 

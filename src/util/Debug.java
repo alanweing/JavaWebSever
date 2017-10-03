@@ -17,6 +17,15 @@ public abstract class Debug {
             Queue.put(new Message(toLog.toString()));
     }
 
+    public static void log(final Exception e) {
+        if (PRINT_TO_CONSOLE)
+            e.printStackTrace();
+        if (SAVE_TO_LOG) {
+            final String s = e.getMessage();
+            Queue.put(new Message(s));
+        }
+    }
+
     public static void register(final Object toLog) {
         Queue.put(new Message(toLog.toString()));
     }
@@ -35,7 +44,7 @@ public abstract class Debug {
 
         @Override
         public String toLog() {
-            return _toLog;
+            return _toLog.concat("\n\n");
         }
 
         @Override

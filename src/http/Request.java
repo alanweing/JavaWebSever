@@ -32,7 +32,7 @@ public class Request {
         try {
             _inputStream.close();
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
     }
 
@@ -51,7 +51,7 @@ public class Request {
             }
 
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
             _ctx.setRequestValidity(false);
         }
     }

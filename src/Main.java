@@ -1,6 +1,7 @@
 import connection.INPERequest;
 import controllers.IndexController;
 import controllers.WeatherController;
+import controllers.WeatherRESTController;
 import http.GET;
 import http.Router;
 import http.Server;
@@ -18,21 +19,10 @@ public class Main {
         try {
             Router.get("/", new IndexController());
             Router.get("/weather", new WeatherController());
+            Router.get("/data/weather", new WeatherRESTController());
             Server.autoInitialize();
         } catch (RouteAlreadyImplementedException e) {
-            Debug.log(e.getMessage());;
+            Debug.log(e);
         }
-//        HashMap<String, String> map = new HashMap<>();
-//        map.put("aloha", "trocaAloha");
-//        map.put("teste", "trocou o test");
-//        map.put("sera", "sera que vai trocar");
-//        try {
-//            String[] s = AWEngine.parseFile(new String[] {"dasnasdjkdas {{ aloha }} dnsakjasdn sdjnnjkasd asdjnjkads {{tesste}} askjdjkds {{ sera }}", "{{sera}} {{sera}} {{teste}}"}, map);
-//            for (final String str : s) {
-//                System.out.println(str);
-//            }
-//        } catch (KeyNotDefinedException e) {
-//            e.printStackTrace();
-//        }
     }
 }

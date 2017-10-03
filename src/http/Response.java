@@ -27,7 +27,7 @@ public class Response {
             try {
                 _output.write(line.getBytes());
             } catch (IOException e) {
-                Debug.log(e.getMessage());
+                Debug.log(e);
             }
         }
     }
@@ -50,13 +50,13 @@ public class Response {
             try {
                 _output.write(line.getBytes());
             } catch (IOException e) {
-                Debug.log(e.getMessage());
+                Debug.log(e);
             }
         } for (final byte b : data) {
             try {
                 _output.write(b);
             } catch (IOException e) {
-                Debug.log(e.getMessage());
+                Debug.log(e);
             }
         }
 
@@ -66,7 +66,7 @@ public class Response {
         try {
             _output.close();
         } catch (IOException e) {
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
     }
 

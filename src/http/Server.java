@@ -29,7 +29,7 @@ public class Server {
             _online = true;
         } catch (IOException e) {
             _serverSocket = null;
-            Debug.log(e.getMessage());
+            Debug.log(e);
         }
     }
 
@@ -40,7 +40,7 @@ public class Server {
     public static void autoInitialize() {
         INPERequest.initializeRequests();
         FileManager.initialize();
-        initialize();
+            initialize();
         new Thread(new Queue()).start();
         listen();
     }
@@ -56,7 +56,7 @@ public class Server {
                     Socket s = _serverSocket.accept();
                     new Thread(new Handler(s)).start();
                 } catch (IOException e) {
-                    Debug.log(e.getMessage());
+                    Debug.log(e);
                 }
             }
         }).start();

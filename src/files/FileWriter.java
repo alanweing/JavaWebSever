@@ -26,7 +26,7 @@ public final class FileWriter {
             try {
                 Files.write(_path, toWrite, StandardOpenOption.APPEND);
             } catch (IOException e) {
-                Debug.log(e.getMessage());
+                Debug.log(e);
             }
         }
     }
@@ -40,7 +40,7 @@ public final class FileWriter {
                 try {
                     f.createNewFile();
                 } catch (IOException e) {
-                    Debug.log(e.getMessage());
+                    Debug.log(e);
                 }
             }
             _paths.put(path, new FileWriter(path));

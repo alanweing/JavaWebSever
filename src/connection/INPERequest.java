@@ -55,7 +55,7 @@ public final class INPERequest implements Runnable {
             try {
                 Thread.sleep(REQUEST_INTERVAL * 1000);
             } catch (InterruptedException e) {
-                Debug.log(e.getMessage());
+                Debug.log(e);
             }
             doRequest();
         }
