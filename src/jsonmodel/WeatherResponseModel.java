@@ -11,8 +11,7 @@ public class WeatherResponseModel {
             humidity,
             wind_direction,
             visibility,
-            last_update,
-            background;
+            last_update;
 
     public WeatherResponseModel() {
         weather_description = INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.tempo_desc);
@@ -22,7 +21,6 @@ public class WeatherResponseModel {
         wind_direction = INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.vento_dir);
         visibility = INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.visibilidade);
         last_update = INPERequest.getInstance().getParser().getValue(INPEXMLParser.CHILD.atualizacao);
-        background = "404.jpg";
     }
 
     public String getWeather_description() {
@@ -51,9 +49,5 @@ public class WeatherResponseModel {
 
     public String getLast_update() {
         return last_update;
-    }
-
-    public String getBackground() {
-        return background;
     }
 }

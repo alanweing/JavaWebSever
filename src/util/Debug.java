@@ -44,7 +44,7 @@ public abstract class Debug {
 
         @Override
         public String toLog() {
-            return _toLog.concat("\n\n");
+            return _toLog.concat("\n");
         }
 
         @Override

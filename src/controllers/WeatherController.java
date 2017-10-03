@@ -29,7 +29,6 @@ public class WeatherController extends Controller implements IController {
         map.put("windDirection", responseModel.getWind_direction());
         map.put("visibility", responseModel.getVisibility());
         map.put("lastUpdate", responseModel.getLast_update());
-        map.put("background", responseModel.getBackground());
         try {
             page = AWEngine.parseFile(FileCache.getFile("views/weather.html"), map);
         } catch (KeyNotDefinedException e) {

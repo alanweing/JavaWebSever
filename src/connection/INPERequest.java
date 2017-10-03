@@ -15,7 +15,6 @@ public final class INPERequest implements Runnable {
     private final GET _get;
 
     private INPEXMLParser _inpeParser;
-
     private String _lastRequest = null;
 
     public static void initializeRequests() {
@@ -50,14 +49,14 @@ public final class INPERequest implements Runnable {
 
     @Override
     public void run() {
-        doRequest();
-        while (Server.isOnline()) {
+        do {
+            doRequest();
             try {
                 Thread.sleep(REQUEST_INTERVAL * 1000);
             } catch (InterruptedException e) {
                 Debug.log(e);
             }
-            doRequest();
         }
+        while (Server.isOnline());
     }
 }
